@@ -1,8 +1,31 @@
 <template>
   <div>
-    Chat
+    Chat shouldScroll {{ shouldScroll }}
+    <div id="messages" ref="messages">
+      <!-- {{  messages }} -->
+      <ul class="list-group small list-group-flush">
+        <div v-for="message in messages" :key="message.id">
+          <li
+            v-if="message.role != 'system'"
+            :class="
+              'list-group-item ' +
+              (message.role == 'assistant'
+                ? 'list-group-item-dark assistant'
+                : 'list-group-item-primary user')
+            "
+          >
+            <b>{{ message.role }} : </b> {{ message.text }}<br />
+            {{ message.created }}
+            <!-- {{ message.content }} -->
+            <!-- <VueMarkdown :source="message.content" /> -->
+            <!-- <br>{{ message.id }}  -->
+            <span v-if="message.partial"> ⌛</span>
+          </li>
+        </div>
+      </ul>
+    </div>
 
-    <ul>
+    <!-- <ul>
       <li v-for="message in messages" :key="message">
         <div v-if="message.role != 'system'">
           {{ message.role }} : {{ message.text }}
@@ -10,16 +33,17 @@
           {{ message.created }}
         </div>
       </li>
-    </ul>
+    </ul> -->
 
     <div class="input-group mb-3">
       <input
         type="text"
         class="form-control"
-        placeholder="Recipient's username"
-        aria-label="Recipient's username"
+        placeholder="your message"
+        aria-label="your message"
         aria-describedby="basic-addon2"
         v-model="message"
+        @keyup.enter="sendMessage()"
       />
       <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" @click="sendMessage()">
@@ -31,11 +55,14 @@
 </template>
 
 <script>
+// import VueMarkdown from "vue-markdown-render";
 export default {
   name: "ChatView",
+  //   components: { VueMarkdown },
   props: ["agent"],
   data() {
     return {
+      shouldScroll: true,
       messages: ["j"],
       start: 0, // start
       count: 10, // number of messages to get
@@ -71,8 +98,48 @@ export default {
     async agent() {
       this.init();
     },
+    messages() {
+      // this.shouldScroll = this.$refs.messages.scrollTop + this.$refs.messages.clientHeight === this.$refs.messages.scrollHeight;
+      console.log("top", this.$refs.messages.scrollTop);
+      console.log(
+        "height",
+        this.$refs.messages.scrollHeight,
+        "offset",
+        this.$refs.messages.offsetHeight,
+        "subs",
+        this.$refs.messages.scrollHeight - this.$refs.messages.offsetHeight
+      );
+
+      if (
+        this.$refs.messages.scrollTop >
+        this.$refs.messages.scrollHeight - this.$refs.messages.offsetHeight - 50
+      ) {
+        this.shouldScroll = true;
+      } else {
+        this.shouldScroll = false;
+      }
+
+      console.log("message changed", this.shouldScroll);
+      if (this.shouldScroll) {
+        console.log("scroll");
+        this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
+      }
+    },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.user {
+  text-align: right;
+}
+
+.assistant {
+  text-align: left;
+}
+
+#messages {
+  height: 400px;
+  overflow-y: auto;
+}
+</style>

@@ -186,9 +186,9 @@ const actions = {
         human: agent.human.text,
         persona_name: agent.persona.name,
         persona: agent.persona.text,
-        model: agent.model.model,
-        function_names:
-          'append_to_text_file,archival_memory_insert,archival_memory_search,conversation_search,conversation_search_date,core_memory_append,core_memory_replace,html2text,http_request,load_urls,message_chatgpt,pause_heartbeats,read_from_text_file,send_message'
+        model: agent.model.model
+        //  function_names:
+        //   'append_to_text_file,archival_memory_insert,archival_memory_search,conversation_search,conversation_search_date,core_memory_append,core_memory_replace,html2text,http_request,load_urls,message_chatgpt,pause_heartbeats,read_from_text_file,send_message'
       },
       user_id: '00000000-0000-0000-0000-000000000000'
     }
@@ -197,7 +197,7 @@ const actions = {
       headers: context.state.api.headers
     })
     console.log(resp)
-    context.commit('setAgent', resp.data)
+    context.commit('setAgent', resp.data.agent_state)
   },
   async deleteAgent(context, h) {
     console.log(h)
@@ -264,7 +264,7 @@ const actions = {
       message: message,
       name: 'string',
       role: 'user',
-      stream_steps: true,
+      stream_steps: false,
       stream_tokens: false,
       timestamp: '2024-07-27T15:53:39.008Z'
     }

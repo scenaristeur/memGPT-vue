@@ -1,26 +1,34 @@
+# db
 
-# db 
 /db/dockerfile.simple
 
 ## build db container
+
 `docker build -t memgpt-db -f db/Dockerfile.simple .`
 
 ## first db run
-`docker run -d --rm --name memgpt-db -p 5432:5432 -e POSTGRES_PASSWORD=password -v memgpt_db:/var/lib/postgresql/data memgpt-db:latest`
+
+````
+cd
+docker run -d --rm --name memgpt-db -p 5432:5432 -e POSTGRES_PASSWORD=password -v ./memgpt_db:/var/lib/postgresql/data memgpt-db:latest```
 
 ## other db_runs
 
-``` docker run -d --rm \
-   --name memgpt-db \
-   -p 5432:5432 \
-   -v memgpt_db:/var/lib/postgresql/data \
-   memgpt-db:latest
-   ```
+````
+
+cd
+docker run -d --rm \
+ --name memgpt-db \
+ -p 5432:5432 \
+ -v ./memgpt_db:/var/lib/postgresql/data \
+ memgpt-db:latest
+
+```
 
 ## memgpt configure ou cat ~/.memgpt/config
 
 
-cat config 
+cat config
 [defaults]
 preset = memgpt_chat
 persona = sam_pov
@@ -28,7 +36,7 @@ human = basic
 
 [model]
 model = memgpt-openai
-	
+
 model_endpoint = https://inference.memgpt.ai
 model_endpoint_type = openai
 context_window = 8192
@@ -62,7 +70,7 @@ memgpt_version = 0.3.18
 anon_clientid = 00000000-0000-0000-0000-000000000000
 
 
-## run 
+## run
 export MEMGPT_SERVER_PASS=ilovellms
 memgpt server
 
@@ -75,20 +83,21 @@ pip install -U unstructured langchain_community
 from langchain_community.document_loaders import UnstructuredURLLoader
 
 def load_url(self, urls: list[str]):
-    """
-    Load a URL into a Document. It is often more readable to load a URL into a Document than fetching with http_request.
-    Prefer this function over http_request if you want to load a URL into a Document and get informations.
+ """
+ Load a URL into a Document. It is often more readable to load a URL into a Document than fetching with http_request.
+ Prefer this function over http_request if you want to load a URL into a Document and get informations.
 
-    Args:
-        url (str): The URL to load.
+ Args:
+     url (str): The URL to load.
 
-    Returns:
-        Document: A Document object containing the URL's contents.
-    """
-    # loader = SeleniumURLLoader(urls=urls)
-    loader = UnstructuredURLLoader(urls=urls)
-    data = loader.load()
+ Returns:
+     Document: A Document object containing the URL's contents.
+ """
+ # loader = SeleniumURLLoader(urls=urls)
+ loader = UnstructuredURLLoader(urls=urls)
+ data = loader.load()
 
-    return data
+ return data
 
 
+```

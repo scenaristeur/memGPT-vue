@@ -4,8 +4,27 @@
     <div id="messages" ref="messages">
       <!-- {{  messages }} -->
       <ul class="list-group small list-group-flush">
-        <div v-for="message in messages" :key="message.id">
-          <li
+        <span v-for="message in messages" :key="message.id">
+          <UserMessage v-if="message.role == 'user'" :message="message" />
+          <AssistantMessage v-else-if="message.role == 'assistant'" :message="message" />
+          <SystemMessage v-else-if="message.role == 'system'" :message="message" />
+          <ToolMessage v-else-if="message.role == 'tool'" :message="message" />
+          <InternalMonologue
+            v-else-if="message.internal_monologue != undefined"
+            :message="message"
+          />
+          <FunctionCall
+            v-else-if="message.function_call != undefined"
+            :message="message"
+          />
+          <FunctionReturn
+            v-else-if="message.function_return != undefined"
+            :message="message"
+          />
+          <li v-else>
+            Dev TODO : <b>{{ message.role }}</b> : {{ message }}
+          </li>
+          <!-- <li
             v-if="message.role != 'system'"
             :class="
               'list-group-item ' +
@@ -18,12 +37,12 @@
             {{ message.created }}
             <hr />
             {{ message }}
-            <!-- {{ message.content }} -->
-            <!-- <VueMarkdown :source="message.content" /> -->
-            <!-- <br>{{ message.id }}  -->
+            {{ message.content }}
+            <VueMarkdown :source="message.content" />
+             <br>{{ message.id }} 
             <span v-if="message.partial"> ⌛</span>
-          </li>
-        </div>
+          </li> -->
+        </span>
       </ul>
     </div>
 
@@ -57,13 +76,31 @@
 </template>
 
 <script>
+import UserMessage from "@/components/UserMessage.vue";
+import AssistantMessage from "@/components/AssistantMessage.vue";
+import SystemMessage from "@/components/SystemMessage.vue";
+import ToolMessage from "@/components/ToolMessage.vue";
+import InternalMonologue from "@/components/InternalMonologue.vue";
+import FunctionCall from "@/components/FunctionCall.vue";
+import FunctionReturn from "@/components/FunctionReturn.vue";
+
 // import VueMarkdown from "vue-markdown-render";
 export default {
   name: "ChatView",
   //   components: { VueMarkdown },
+  components: {
+    UserMessage,
+    AssistantMessage,
+    SystemMessage,
+    ToolMessage,
+    InternalMonologue,
+    FunctionCall,
+    FunctionReturn,
+  },
   props: ["agent"],
   data() {
     return {
+      message: "",
       shouldScroll: true,
       start: 0, // start
       count: 1000, // number of messages to get
@@ -76,6 +113,8 @@ export default {
     async sendMessage() {
       let status = await this.$store.dispatch("core/sendMessage", this.message);
       console.log("send status", status);
+      this.message = "";
+      this.shouldScroll = true;
     },
     async init() {
       let params = {
@@ -137,16 +176,12 @@ export default {
 </script>
 
 <style scoped>
-.user {
-  text-align: right;
-}
-
-.assistant {
-  text-align: left;
-}
-
 #messages {
-  height: 400px;
+  height: 700px;
+  width: 700px;
   overflow-y: auto;
+  border: 2px solid rgb(0, 47, 255);
+  padding: 10px;
+  border-radius: 20px;
 }
 </style>

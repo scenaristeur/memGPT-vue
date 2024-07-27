@@ -61,12 +61,13 @@ const mutations = {
     let user_message = {
       role: 'user',
       type: 'user_message',
-      message: m.message,
-      time: m.timestamp
+      text: m.message,
+      created_at: m.timestamp
     }
     console.log('push', user_message)
     messages.push(user_message)
     state.messages = messages
+    console.log('state.messages', state.messages)
   },
   pushMemGPTMessages(state, m) {
     console.log('pushMemGPTMessage', m)
@@ -309,7 +310,7 @@ const actions = {
       role: 'user',
       stream_steps: false,
       stream_tokens: false,
-      timestamp: '2024-07-27T15:53:39.008Z'
+      timestamp: new Date().toISOString()
     }
     context.commit('pushUserMessage', params)
     console.log('agent', context.state.agent, 'params', params)

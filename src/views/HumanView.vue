@@ -3,7 +3,7 @@
     <b>{{ human.name }}</b
     >: {{ human.text }}<br />
     <small>{{ human.user_id }}</small>
-    <button class="btn btn-danger" @click="deleteHuman()">create human</button>
+    <button class="btn btn-danger" @click="deleteHuman()">delete human</button>
   </div>
 </template>
 

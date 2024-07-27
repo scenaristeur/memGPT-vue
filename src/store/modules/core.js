@@ -222,7 +222,74 @@ const actions = {
     )
     console.log(resp.data)
     return resp.data
+  },
+  async getAgentMessages(context, params) {
+    let resp = await context.state.client.get_agent_messages_api_agents__agent_id__messages_get(
+      params,
+      null,
+      {
+        headers: context.state.api.headers
+      }
+    )
+    console.log(resp.data)
+    return resp.data.messages
+  },
+
+  async getAgentMemory(context, params) {
+    let resp = await context.state.client.get_agent_memory_api_agents__agent_id__memory_get(
+      params,
+      null,
+      {
+        headers: context.state.api.headers
+      }
+    )
+    console.log(resp.data)
+    return resp.data
+  },
+
+  async getAgentMemoryCursor(context, agent_id) {
+    let resp =
+      await context.state.client.get_agent_messages_cursor_api_agents__agent_id__messages_cursor_get(
+        agent_id,
+        null,
+        {
+          headers: context.state.api.headers
+        }
+      )
+    console.log(resp.data)
+    return resp.data
+  },
+  async sendMessage(context, message) {
+    let params = {
+      message: message,
+      name: 'string',
+      role: 'user',
+      stream_steps: true,
+      stream_tokens: false,
+      timestamp: '2024-07-27T15:53:39.008Z'
+    }
+    console.log('agent', context.state.agent, 'params', params)
+    let resp = await context.state.client.send_message_api_agents__agent_id__messages_post(
+      context.state.agent.id,
+      params,
+      {
+        headers: context.state.api.headers
+      }
+    )
+    console.log(resp.data)
+    return resp.data
   }
+  // async sendAgentMessage(context, params) {
+  //   let resp = await context.state.client.send_message_api_agents__agent_id__messages_post(
+  //     params,
+  //     null,
+  //     {
+  //       headers: context.state.api.headers
+  //     }
+  //   )
+  //   console.log(resp.data)
+  //   return resp.data
+  // }
 
   // vuexAction(context, data) {
   //   console.log(data)

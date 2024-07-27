@@ -9,13 +9,15 @@
             v-if="message.role != 'system'"
             :class="
               'list-group-item ' +
-              (message.role == 'assistant'
-                ? 'list-group-item-dark assistant'
-                : 'list-group-item-primary user')
+              (message.role == 'user'
+                ? 'list-group-item-primary user'
+                : 'list-group-item-dark assistant')
             "
           >
             <b>{{ message.role }} : </b> {{ message.text }}<br />
             {{ message.created }}
+            <hr />
+            {{ message }}
             <!-- {{ message.content }} -->
             <!-- <VueMarkdown :source="message.content" /> -->
             <!-- <br>{{ message.id }}  -->
@@ -63,9 +65,8 @@ export default {
   data() {
     return {
       shouldScroll: true,
-      messages: ["j"],
       start: 0, // start
-      count: 10, // number of messages to get
+      count: 1000, // number of messages to get
     };
   },
   created() {
@@ -82,16 +83,16 @@ export default {
         count: this.count,
         agent_id: this.agent.id,
       };
-      console.log(params);
+      console.log("voir count vec le cursor ?", params);
       this.memory = await this.$store.dispatch("core/getAgentMemory", params);
       this.memory_cursor = await this.$store.dispatch(
         "core/getAgentMemoryCursor",
         this.agent.id
       );
-      this.messages = await this.$store.dispatch("core/getAgentMessages", params);
+      //   this.messages =
+      await this.$store.dispatch("core/getAgentMessages", params);
       console.log("memory", this.memory);
       console.log("memory_cursor", this.memory_cursor);
-      console.log("messages", this.messages.reverse());
     },
   },
   watch: {
@@ -99,6 +100,7 @@ export default {
       this.init();
     },
     messages() {
+      //this.messages.reverse();
       // this.shouldScroll = this.$refs.messages.scrollTop + this.$refs.messages.clientHeight === this.$refs.messages.scrollHeight;
       console.log("top", this.$refs.messages.scrollTop);
       console.log(
@@ -124,6 +126,11 @@ export default {
         console.log("scroll");
         this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
       }
+    },
+  },
+  computed: {
+    messages() {
+      return this.$store.state.core.messages;
     },
   },
 };

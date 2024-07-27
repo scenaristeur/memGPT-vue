@@ -15,7 +15,8 @@ const state = () => ({
   data_sources: [],
   agents: [],
   agent: null,
-  models: []
+  models: [],
+  messages: []
 })
 
 const mutations = {
@@ -49,6 +50,47 @@ const mutations = {
   },
   setModels(state, m) {
     state.models = m
+  },
+  setMessages(state, m) {
+    console.log('messages SETMESSAGES', m)
+    state.messages = m
+  },
+  pushUserMessage(state, m) {
+    console.log('pushUserMessage', m)
+    let messages = state.messages
+    let user_message = {
+      role: 'user',
+      type: 'user_message',
+      message: m.message,
+      time: m.timestamp
+    }
+    console.log('push', user_message)
+    messages.push(user_message)
+    state.messages = messages
+  },
+  pushMemGPTMessages(state, m) {
+    console.log('pushMemGPTMessage', m)
+    let messages = state.messages
+    for (let i = 0; i < m.messages.length; i++) {
+      // let memgpt_message = {
+      //   role: m.messages[i].role,
+      //   type: 'memgpt_message',
+      //   message: m.messages[i].message,
+      //   time: m.messages[i].timestamp
+      // }
+      // console.log('push', memgpt_message)
+      messages.push(m.messages[i])
+    }
+    state.messages = messages
+    // let memgpt_message = {
+    //   role: 'assistant',
+    //   type: 'memgpt_message',
+    //   message: m.message,
+    //   time: m.timestamp
+    // }
+    // console.log('push', m)
+    // messages.push(memgpt_message)
+    // state.messages = messages
   }
 }
 
@@ -232,7 +274,8 @@ const actions = {
       }
     )
     console.log(resp.data)
-    return resp.data.messages
+
+    context.commit('setMessages', resp.data.messages.reverse())
   },
 
   async getAgentMemory(context, params) {
@@ -268,6 +311,7 @@ const actions = {
       stream_tokens: false,
       timestamp: '2024-07-27T15:53:39.008Z'
     }
+    context.commit('pushUserMessage', params)
     console.log('agent', context.state.agent, 'params', params)
     let resp = await context.state.client.send_message_api_agents__agent_id__messages_post(
       context.state.agent.id,
@@ -277,7 +321,8 @@ const actions = {
       }
     )
     console.log(resp.data)
-    return resp.data
+    context.commit('pushMemGPTMessages', resp.data)
+    // return resp.data
   }
   // async sendAgentMessage(context, params) {
   //   let resp = await context.state.client.send_message_api_agents__agent_id__messages_post(

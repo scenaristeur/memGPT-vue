@@ -68,7 +68,7 @@ export default {
       this.$store.dispatch("core/admin_create_user");
     },
     getUsers() {
-      this.users = this.$store.dispatch("core/admin_get_all_users");
+      this.$store.dispatch("core/admin_get_all_users");
     },
   },
   computed: {

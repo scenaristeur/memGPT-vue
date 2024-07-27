@@ -9,10 +9,6 @@ export class MemgptApi {
       //   'Authorization': `Bearer ilovellms`,
       'Content-Type': 'application/json'
     }
-    this.init()
-    //this.connect()
-    //this.admin_create_user()
-    //this.admin_get_all_users()
   }
   async init() {
     this.headers.Authorization = `Bearer ${this.options.password}`

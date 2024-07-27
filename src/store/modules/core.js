@@ -6,19 +6,33 @@ const state = () => ({
   api: null,
   client: null,
   status: 'disconnected',
-  users: []
+  users: [],
+  humans: [],
+  human: null,
+  personas: [],
+  persona: null,
+  tools: [],
+  data_sources: [],
+  agents: [],
+  agent: null
 })
 
 const mutations = {
-  setUsers(state, u) {
-    console.log(u)
-    state.users = u
-  },
   setApi(state, a) {
     state.api = a
   },
   setClient(state, c) {
     state.client = c
+  },
+  setUsers(state, u) {
+    console.log(u)
+    state.users = u
+  },
+  setHumans(state, h) {
+    state.humans = h
+  },
+  setHuman(state, h) {
+    state.human = h
   }
   //   setResponse(state, r) {
   //     state.response = r
@@ -40,11 +54,40 @@ const actions = {
 
   // ADMIN
   async admin_get_all_users(context) {
-    let users = await context.state.client.get_all_users_admin_users_get(null, null, {
+    let resp = await context.state.client.get_all_users_admin_users_get(null, null, {
       headers: context.state.api.headers
     })
-    context.commit('setUsers', users.data.user_list)
+    context.commit('setUsers', resp.data.user_list)
+  },
+
+  // HUMAN
+
+  async getHumans(context) {
+    let resp = await context.state.client.list_humans_api_humans_get(null, null, {
+      headers: context.state.api.headers
+    })
+    console.log(resp)
+    context.commit('setHumans', resp.data.humans)
+  },
+
+  async selectHuman(context, h) {
+    console.log(h)
+    let resp = await context.state.client.get_human_api_humans__human_name__get(h.name, null, {
+      headers: context.state.api.headers
+    })
+    context.commit('setHuman', resp.data)
+  },
+  async createHuman(context, h) {
+    console.log(h)
+    let resp = await context.state.client.create_human_api_humans_post(null, h, {
+      headers: context.state.api.headers
+    })
+    context.commit('setHuman', resp.data)
   }
+
+  //PERSONA
+
+  //AGENT
 
   // vuexAction(context, data) {
   //   console.log(data)

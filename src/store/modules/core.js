@@ -244,13 +244,9 @@ const actions = {
   },
   async deleteAgent(context, h) {
     console.log(h)
-    let resp = await context.state.client.delete_agent_api_agents__agent_name__delete(
-      h.name,
-      null,
-      {
-        headers: context.state.api.headers
-      }
-    )
+    let resp = await context.state.client.delete_agent_api_agents__agent_id__delete(h.id, null, {
+      headers: context.state.api.headers
+    })
     console.log(resp)
     context.dispatch('getAgents')
     context.commit('setAgent', null)

@@ -117,21 +117,24 @@ export default {
       this.shouldScroll = true;
     },
     async init() {
-      let params = {
-        start: this.start,
-        count: this.count,
-        agent_id: this.agent.id,
-      };
-      console.log("voir count vec le cursor ?", params);
-      this.memory = await this.$store.dispatch("core/getAgentMemory", params);
-      this.memory_cursor = await this.$store.dispatch(
-        "core/getAgentMemoryCursor",
-        this.agent.id
-      );
-      //   this.messages =
-      await this.$store.dispatch("core/getAgentMessages", params);
-      console.log("memory", this.memory);
-      console.log("memory_cursor", this.memory_cursor);
+      console.log("init", this.agent);
+      if (this.agent != null) {
+        let params = {
+          start: this.start,
+          count: this.count,
+          agent_id: this.agent.id,
+        };
+        console.log("voir count vec le cursor ?", params);
+        this.memory = await this.$store.dispatch("core/getAgentMemory", params);
+        this.memory_cursor = await this.$store.dispatch(
+          "core/getAgentMemoryCursor",
+          this.agent.id
+        );
+        //   this.messages =
+        await this.$store.dispatch("core/getAgentMessages", params);
+        console.log("memory", this.memory);
+        console.log("memory_cursor", this.memory_cursor);
+      }
     },
   },
   watch: {
@@ -178,7 +181,6 @@ export default {
 <style scoped>
 #messages {
   height: 700px;
-  width: 700px;
   overflow-y: auto;
   border: 2px solid rgb(0, 47, 255);
   padding: 10px;

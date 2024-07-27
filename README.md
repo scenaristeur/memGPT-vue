@@ -11,6 +11,7 @@ This template should help get you started developing with Vue 3 in Vite.
 - [ ] Add all cli commands,
 - [ ] web terminal comme scenaristeur/agent to run commands
 - [ ] generer les types dans memGPT `npx openapicmd typegen ./openapi_memgpt.json > openapi_memgpt.d.ts ` ( https://www.npmjs.com/package/openapi-client-axios)
+- [ ] Cors error when deleting human & persona
 
 # OpenAPIClientAxios
 

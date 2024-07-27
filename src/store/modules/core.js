@@ -14,7 +14,8 @@ const state = () => ({
   tools: [],
   data_sources: [],
   agents: [],
-  agent: null
+  agent: null,
+  models: []
 })
 
 const mutations = {
@@ -33,11 +34,22 @@ const mutations = {
   },
   setHuman(state, h) {
     state.human = h
+  },
+  setPersonas(state, p) {
+    state.personas = p
+  },
+  setPersona(state, p) {
+    state.persona = p
+  },
+  setAgents(state, a) {
+    state.agents = a
+  },
+  setAgent(state, a) {
+    state.agent = a
+  },
+  setModels(state, m) {
+    state.models = m
   }
-  //   setResponse(state, r) {
-  //     state.response = r
-  //     console.log(state.response)
-  //   },
 }
 
 const actions = {
@@ -58,6 +70,14 @@ const actions = {
       headers: context.state.api.headers
     })
     context.commit('setUsers', resp.data.user_list)
+  },
+
+  async getModels(context) {
+    let resp = await context.state.client.list_models_api_models_get(null, null, {
+      headers: context.state.api.headers
+    })
+    console.log(resp)
+    context.commit('setModels', resp.data.models)
   },
 
   // HUMAN
@@ -83,11 +103,126 @@ const actions = {
       headers: context.state.api.headers
     })
     context.commit('setHuman', resp.data)
-  }
+  },
+  async deleteHuman(context, h) {
+    console.log(h)
+    let resp = await context.state.client.delete_human_api_humans__human_name__delete(
+      h.name,
+      null,
+      {
+        headers: context.state.api.headers
+      }
+    )
+    console.log(resp)
+    context.dispatch('getHumans')
+    context.commit('setHuman', null)
+  },
 
   //PERSONA
 
+  async getPersonas(context) {
+    let resp = await context.state.client.list_personas_api_personas_get(null, null, {
+      headers: context.state.api.headers
+    })
+    console.log(resp)
+    context.commit('setPersonas', resp.data.personas)
+  },
+
+  async selectPersona(context, p) {
+    console.log(p)
+    let resp = await context.state.client.get_persona_api_personas__persona_name__get(
+      p.name,
+      null,
+      {
+        headers: context.state.api.headers
+      }
+    )
+    context.commit('setPersona', resp.data)
+  },
+  async createPersona(context, p) {
+    console.log(p)
+    let resp = await context.state.client.create_persona_api_personas_post(null, p, {
+      headers: context.state.api.headers
+    })
+    context.commit('setPersona', resp.data)
+  },
+  async deletePersona(context, h) {
+    console.log(h)
+    let resp = await context.state.client.delete_persona_api_personas__persona_name__delete(
+      h.name,
+      null,
+      {
+        headers: context.state.api.headers
+      }
+    )
+    console.log(resp)
+    context.dispatch('getPersonas')
+    context.commit('setPersona', null)
+  },
+
   //AGENT
+  async getAgents(context) {
+    let resp = await context.state.client.list_agents_api_agents_get(null, null, {
+      headers: context.state.api.headers
+    })
+    console.log(resp)
+    context.commit('setAgents', resp.data.agents)
+  },
+
+  async selectAgent(context, p) {
+    console.log(p)
+    // let resp = await context.state.client.get_agent_api_agents__agent_name__get(p.name, null, {
+    //   headers: context.state.api.headers
+    // })
+    context.commit('setAgent', p)
+  },
+  async createAgent(context, agent) {
+    // user_id: "00000000-0000-0000-0000-000000000000"
+
+    let config = {
+      config: {
+        name: agent.name,
+        human_name: agent.human.name,
+        human: agent.human.text,
+        persona_name: agent.persona.name,
+        persona: agent.persona.text,
+        model: agent.model.model,
+        function_names:
+          'append_to_text_file,archival_memory_insert,archival_memory_search,conversation_search,conversation_search_date,core_memory_append,core_memory_replace,html2text,http_request,load_urls,message_chatgpt,pause_heartbeats,read_from_text_file,send_message'
+      },
+      user_id: '00000000-0000-0000-0000-000000000000'
+    }
+
+    let resp = await context.state.client.create_agent_api_agents_post(null, config, {
+      headers: context.state.api.headers
+    })
+    console.log(resp)
+    context.commit('setAgent', resp.data)
+  },
+  async deleteAgent(context, h) {
+    console.log(h)
+    let resp = await context.state.client.delete_agent_api_agents__agent_name__delete(
+      h.name,
+      null,
+      {
+        headers: context.state.api.headers
+      }
+    )
+    console.log(resp)
+    context.dispatch('getAgents')
+    context.commit('setAgent', null)
+  },
+  async getAgentConfig(context, a) {
+    let resp = await context.state.client.get_agent_config_api_agents__agent_id__config_get(
+      a.id,
+      null,
+      {
+        headers: context.state.api.headers
+      }
+    )
+    console.log(resp.data)
+    return resp.data
+  }
 
   // vuexAction(context, data) {
   //   console.log(data)

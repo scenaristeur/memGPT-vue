@@ -11,21 +11,21 @@
         <input
           type="text"
           class="form-control"
-          placeholder="memgpt endpoint"
-          aria-label="memgpt endpoint"
+          placeholder="human name"
+          aria-label="human name"
           v-model="human.name"
           aria-describedby="basic-addon1"
         />
       </div>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">human description</span>
+          <span class="input-group-text" id="basic-addon1">human text</span>
         </div>
         <input
           type="text"
           class="form-control"
-          placeholder="memgpt endpoint"
-          aria-label="memgpt endpoint"
+          placeholder="human text"
+          aria-label="human text"
           v-model="human.text"
           aria-describedby="basic-addon1"
         />

@@ -11,11 +11,11 @@ import ToolsView from "./ToolsView.vue";
 <template>
   <main>
     <!-- <TheWelcome /> -->
+    <AgentsView />
     <AdminView />
     <HumansView />
     <PersonasView />
     <ToolsView />
     <DataSourcesView />
-    <AgentsView />
   </main>
 </template>
